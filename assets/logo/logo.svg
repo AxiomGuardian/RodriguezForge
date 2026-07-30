@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 720" role="img" aria-label="Rodriguez Forge LLC">
+  <title>Rodriguez Forge LLC</title>
+
+  <!-- Mark: outer peak with punched negative space (even-odd fill) -->
+  <g transform="translate(400 280) scale(210)">
+    <path
+      fill="#000000"
+      fill-rule="evenodd"
+      d="
+        M 0,-1 L 0.95,0.70 L 0.58,0.70 L 0.58,0.95 L -0.58,0.95 L -0.58,0.70 L -0.95,0.70 Z
+        M 0,-0.48 L 0.40,0.40 L -0.40,0.40 Z
+      "
+    />
+    <!-- Blue accents: inner peak + ridge beam -->
+    <path fill="#4169E1" d="M 0,-0.34 L 0.30,0.28 L 0.15,0.28 L 0,-0.06 L -0.15,0.28 L -0.30,0.28 Z"/>
+    <path fill="#4169E1" d="M -0.13,0.06 L 0.13,0.06 L 0.13,0.16 L -0.13,0.16 Z"/>
+  </g>
+
+  <text
+    x="400"
+    y="580"
+    text-anchor="middle"
+    font-family="Antonio, 'Barlow Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif"
+    font-weight="700"
+    font-size="72"
+    letter-spacing="10"
+    fill="#000000"
+  >RODRIGUEZ FORGE</text>
+</svg>
