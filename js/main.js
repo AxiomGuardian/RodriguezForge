@@ -16,6 +16,33 @@
     el.textContent = String(new Date().getFullYear());
   });
 
+  /* Site-wide phone / email from js/site-config.js */
+  (function applySiteConfig() {
+    const cfg = window.RF_SITE || {};
+    const phone = (cfg.phone || "").trim();
+    const phoneTel = (cfg.phoneTel || "").trim();
+    const email = (cfg.email || "hello@rodriguezforge.com").trim();
+    const emailHref = (cfg.emailHref || "mailto:" + email).trim();
+    const hasPhone = Boolean(phone && phoneTel);
+
+    document.querySelectorAll('[data-rf="phone"]').forEach((el) => {
+      el.textContent = hasPhone ? phone : "Request a call";
+    });
+    document.querySelectorAll('[data-rf="phone-link"]').forEach((el) => {
+      el.setAttribute("href", hasPhone ? phoneTel : "contact.html");
+      if (hasPhone) el.setAttribute("aria-label", "Call " + phone);
+    });
+    document.querySelectorAll('[data-rf="email"]').forEach((el) => {
+      el.textContent = email;
+    });
+    document.querySelectorAll('[data-rf="email-link"]').forEach((el) => {
+      el.setAttribute("href", emailHref);
+    });
+    document.querySelectorAll('[data-rf="location"]').forEach((el) => {
+      if (cfg.location) el.textContent = cfg.location;
+    });
+  })();
+
   /* Sticky header + hide scroll hint after user scrolls */
   const onScroll = () => {
     const y = window.scrollY || 0;

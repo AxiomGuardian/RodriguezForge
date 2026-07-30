@@ -25,25 +25,33 @@
           <img src="assets/logo/emblem.png" alt="" width="48" height="48" />
           <span class="nav__logo-text">Rodriguez Forge</span>
         </a>
-        <nav class="nav__links" aria-label="Primary">
+                <nav class="nav__links" aria-label="Primary">
+          <a href="index.html" data-nav>Home</a>
           <a href="projects.html" data-nav>Projects</a>
           <a href="about.html" data-nav>About</a>
           <a href="services.html" data-nav>Services</a>
           <a href="process.html" data-nav>Process</a>
           <a href="contact.html" data-nav>Contact</a>
         </nav>
-        <a class="btn btn--primary nav__cta" href="contact.html">Start Your Project</a>
+        <div class="nav__actions">
+          <a class="nav__phone" data-rf="phone-link" href="contact.html" aria-label="Call us">
+            <span class="nav__phone-label">Call</span>
+            <span data-rf="phone">Contact</span>
+          </a>
+          <a class="btn btn--primary nav__cta" href="contact.html">Start Your Project</a>
+        </div>
         <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
-      <nav class="nav__mobile" aria-label="Mobile">
+            <nav class="nav__mobile" aria-label="Mobile">
         <a href="index.html" data-nav>Home</a>
         <a href="projects.html" data-nav>Projects</a>
         <a href="about.html" data-nav>About</a>
         <a href="services.html" data-nav>Services</a>
         <a href="process.html" data-nav>Process</a>
         <a href="contact.html" data-nav>Contact</a>
+        <a class="btn btn--secondary" data-rf="phone-link" href="contact.html">Call Us</a>
         <a class="btn btn--primary" href="contact.html">Start Your Project</a>
       </nav>
     </header>
@@ -199,7 +207,8 @@
           <div class="footer-col">
             <h4>Contact</h4>
             <p>Eloy, Arizona</p>
-            <p><a href="mailto:hello@rodriguezforge.com">hello@rodriguezforge.com</a></p>
+            <p><a data-rf="phone-link" href="contact.html"><span data-rf="phone">Request a call</span></a></p>
+            <p><a data-rf="email-link" href="mailto:hello@rodriguezforge.com"><span data-rf="email">hello@rodriguezforge.com</span></a></p>
           </div>
         </div>
         <div class="footer-bottom">
@@ -208,6 +217,7 @@
         </div>
       </div>
     </footer>
+    <script src="js/site-config.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

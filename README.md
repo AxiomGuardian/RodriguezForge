@@ -71,9 +71,21 @@ Pages rebuilds automatically after each push to `main`.
    - `CNAME` for `www` → `axiomguardian.github.io`
 3. Wait for DNS + HTTPS to provision in GitHub Pages settings
 
-## Contact placeholders
+## Contact (edit one file)
 
-Update real phone/email in the HTML when ready (`hello@rodriguezforge.com` is currently used).
+Update phone and email in **`js/site-config.js`**:
+
+```js
+phone: "(520) 555-1234",
+phoneTel: "tel:+15205551234",
+email: "hello@rodriguezforge.com",
+```
+
+Header, footer, and contact page update automatically. Leave `phone` empty until you have a public number (UI falls back to “Request a call” → contact form).
+
+## Photos (coming soon)
+
+Drop real project and team images into `assets/images/` when ready. Placeholder frames are labeled and ready to swap.
 
 ## License
 

@@ -40,25 +40,33 @@
           <img src="assets/logo/emblem.png" alt="" width="48" height="48" />
           <span class="nav__logo-text">Rodriguez Forge</span>
         </a>
-        <nav class="nav__links" aria-label="Primary">
+                <nav class="nav__links" aria-label="Primary">
+          <a href="index.html" data-nav>Home</a>
           <a href="projects.html" data-nav>Projects</a>
           <a href="about.html" data-nav>About</a>
           <a href="services.html" data-nav>Services</a>
           <a href="process.html" data-nav>Process</a>
           <a href="contact.html" data-nav>Contact</a>
         </nav>
-        <a class="btn btn--primary nav__cta" href="contact.html">Start Your Project</a>
+        <div class="nav__actions">
+          <a class="nav__phone" data-rf="phone-link" href="contact.html" aria-label="Call us">
+            <span class="nav__phone-label">Call</span>
+            <span data-rf="phone">Contact</span>
+          </a>
+          <a class="btn btn--primary nav__cta" href="contact.html">Start Your Project</a>
+        </div>
         <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
-      <nav class="nav__mobile" aria-label="Mobile">
+            <nav class="nav__mobile" aria-label="Mobile">
         <a href="index.html" data-nav>Home</a>
         <a href="projects.html" data-nav>Projects</a>
         <a href="about.html" data-nav>About</a>
         <a href="services.html" data-nav>Services</a>
         <a href="process.html" data-nav>Process</a>
         <a href="contact.html" data-nav>Contact</a>
+        <a class="btn btn--secondary" data-rf="phone-link" href="contact.html">Call Us</a>
         <a class="btn btn--primary" href="contact.html">Start Your Project</a>
       </nav>
     </header>
@@ -82,7 +90,8 @@
           </p>
           <div class="btn-row">
             <a class="btn btn--primary" href="contact.html">Start Your Project</a>
-            <a class="btn btn--secondary" href="projects.html">View Our Work</a>
+            <a class="btn btn--secondary" data-rf="phone-link" href="contact.html">Call Us</a>
+            <a class="btn btn--ghost" href="projects.html">View Our Work</a>
           </div>
         </div>
         <div class="hero__scroll" aria-hidden="true">
@@ -122,33 +131,46 @@
             <article class="project-card reveal">
               <div class="project-card__media">
                 <div class="ph ph--1"></div>
+                <span class="media-frame__badge">Photo coming soon</span>
               </div>
               <div class="project-card__body">
                 <p class="project-card__meta">New Construction · Eloy, AZ</p>
                 <h3>Custom Residence</h3>
-                <p>Full custom home with site-sensitive design and durable materials.</p>
+                <p>
+                  Ground-up home planned for desert climate and daily family use. Structure and
+                  envelope first, then finishes chosen to last. Photography will land here as the
+                  portfolio is built out.
+                </p>
               </div>
               <a class="project-card__link" href="project.html?id=custom-residence" aria-label="View Custom Residence"></a>
             </article>
             <article class="project-card reveal reveal-delay-1">
               <div class="project-card__media">
                 <div class="ph ph--2"></div>
+                <span class="media-frame__badge">Photo coming soon</span>
               </div>
               <div class="project-card__body">
                 <p class="project-card__meta">Remodel · Casa Grande Area</p>
                 <h3>Kitchen & Living Remodel</h3>
-                <p>Whole-home refresh focused on flow, light, and finishes that hold up.</p>
+                <p>
+                  Closed rooms opened into one living core. Layout fixed before cosmetics. Built for
+                  how the family actually lives, not a magazine shot.
+                </p>
               </div>
               <a class="project-card__link" href="project.html?id=kitchen-living" aria-label="View Kitchen and Living Remodel"></a>
             </article>
             <article class="project-card reveal reveal-delay-2">
               <div class="project-card__media">
                 <div class="ph ph--3"></div>
+                <span class="media-frame__badge">Photo coming soon</span>
               </div>
               <div class="project-card__body">
                 <p class="project-card__meta">Addition · Surrounding Area</p>
                 <h3>Home Addition</h3>
-                <p>Seamless expansion with matched structure and careful detailing.</p>
+                <p>
+                  More room without a bolted-on look. Connections engineered clean so old and new
+                  read as one house. Same standard as a full build.
+                </p>
               </div>
               <a class="project-card__link" href="project.html?id=home-addition" aria-label="View Home Addition"></a>
             </article>
@@ -187,7 +209,9 @@
             </p>
             <p>
               Together, Rodriguez Forge is traditional strength with disciplined modern practice.
-              No shortcuts. Just work that stands up, and a name families can trust.
+              No shortcuts. Just work that stands up, and a name families can trust. Albert leads
+              quality and reputation. Isaac leads systems and growth. The field is staffed to match
+              the standard.
             </p>
             <div class="mt-3">
               <a class="btn btn--secondary" href="about.html">Read Our Story</a>
@@ -208,22 +232,27 @@
           </div>
           <div class="process-steps">
             <article class="process-step reveal">
+              <div class="process-step__icon" aria-hidden="true"></div>
               <h3>Listen</h3>
               <p>We start with your land, your goals, and your budget.</p>
             </article>
             <article class="process-step reveal reveal-delay-1">
+              <div class="process-step__icon" aria-hidden="true"></div>
               <h3>Design</h3>
               <p>Plans built for Arizona living: durable, efficient, and practical.</p>
             </article>
             <article class="process-step reveal reveal-delay-2">
+              <div class="process-step__icon" aria-hidden="true"></div>
               <h3>Build</h3>
               <p>Hands-on craftsmanship with clear project control.</p>
             </article>
             <article class="process-step reveal reveal-delay-3">
+              <div class="process-step__icon" aria-hidden="true"></div>
               <h3>Inspect</h3>
               <p>We check the work the way we would for our own family.</p>
             </article>
             <article class="process-step reveal reveal-delay-4">
+              <div class="process-step__icon" aria-hidden="true"></div>
               <h3>Deliver</h3>
               <p>A finished home, a clean handoff, and support after the keys.</p>
             </article>
@@ -288,7 +317,8 @@
           </p>
           <div class="btn-row">
             <a class="btn btn--primary" href="contact.html">Start Your Project</a>
-            <a class="btn btn--secondary" href="services.html">Explore Services</a>
+            <a class="btn btn--secondary" data-rf="phone-link" href="contact.html">Call Us</a>
+            <a class="btn btn--ghost" href="services.html">Explore Services</a>
           </div>
         </div>
       </section>
@@ -322,7 +352,8 @@
           <div class="footer-col">
             <h4>Contact</h4>
             <p>Eloy, Arizona</p>
-            <p><a href="mailto:hello@rodriguezforge.com">hello@rodriguezforge.com</a></p>
+            <p><a data-rf="phone-link" href="contact.html"><span data-rf="phone">Request a call</span></a></p>
+            <p><a data-rf="email-link" href="mailto:hello@rodriguezforge.com"><span data-rf="email">hello@rodriguezforge.com</span></a></p>
           </div>
         </div>
         <div class="footer-bottom">
@@ -332,6 +363,7 @@
       </div>
     </footer>
 
+    <script src="js/site-config.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
