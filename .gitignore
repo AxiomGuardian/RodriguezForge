@@ -4,3 +4,8 @@
 *.log
 .idea/
 .vscode/
+
+# Private loan documents - never commit
+Documents to Send to Daniel/
+Important Documents/
+Loan Docs/
