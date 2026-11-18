@@ -249,14 +249,14 @@
     const out = compute();
     const payload = {
       full_name: name, phone, email, preferred_contact: $("req-contact").value,
-      timeline: $("req-timeline").value, message: $("req-message").value.trim(),
+      timeline: $("req-timeline").value, payment_plan: $("req-pay").value, message: $("req-message").value.trim(),
       address: addr.value.trim(), job_type: state.job, finish_level: state.finish, size_value: state.size,
       town_id: state.town ? state.town.id : "",
       county: state.geo ? state.geo.county : "", in_city_limits: state.geo ? state.geo.in_city_limits : "",
       latitude: state.geo ? state.geo.latitude : "", longitude: state.geo ? state.geo.longitude : "",
       distance_miles: state.geo ? state.geo.distance_miles : "",
     };
-    log("info", "request.submit.start", "Submitting", { job: state.job, photos: state.photos.length });
+    log("info", "request.submit.start", "Submitting", { job: state.job, photos: state.photos.length, payment: $("req-pay").value });
 
     const { data: reqId, error } = await sb.rpc("submit_request", { p: payload });
     if (error) {
