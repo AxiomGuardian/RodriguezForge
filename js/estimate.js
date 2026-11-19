@@ -6,6 +6,7 @@
 (function () {
   const { sb, log, session, SUPABASE_URL, SUPABASE_KEY } = window.RF || {};
   const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const money = (n) => "$" + Math.round(n).toLocaleString("en-US");
   const short = (n) => (n >= 1e6 ? "$" + (n / 1e6).toFixed(n >= 1e7 ? 1 : 2).replace(/\.?0+$/, "") + "M" : n >= 1e3 ? "$" + Math.round(n / 1e3) + "K" : money(n));
 
@@ -47,6 +48,7 @@
       if (sel.value === "other") { state.town = null; log("info", "town.other", "Outside listed area"); }
       else { state.town = state.towns.find((t) => String(t.id) === sel.value) || null; if (state.town) log("info", "town.select", state.town.name); }
       if (!state.geo || (state.town && state.geo.town && state.geo.town.id !== state.town.id)) state.geo = null;
+      const pl = $("est-place"); if (pl && pl.classList.contains("is-warn")) pl.hidden = true;
       calc();
     });
   }
@@ -94,49 +96,112 @@
   slider.addEventListener("change", () => log("info", "size.set", String(state.size)));
   setSize(1500);
 
-  // ---------- Address lookup ----------
-  const addr = $("est-address"), place = $("est-place");
+  // ---------- Address: suggestions as you type, then lookup ----------
+  const addr = $("est-address"), place = $("est-place"), list = $("est-suggest");
+  let sugTimer = null, sugSeq = 0, sugItems = [], sugIndex = -1;
+
+  async function geo(body) {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/geocode`, {
+      method: "POST", headers: { "Content-Type": "application/json", apikey: SUPABASE_KEY },
+      body: JSON.stringify({ ...body, session }),
+    });
+    return res.json();
+  }
+
+  function showPlace(g) {
+    if (!g.found) {
+      state.geo = null;
+      place.hidden = false; place.className = "est-place is-warn";
+      place.textContent = g.message || "We couldn't find that address. Pick your town below and keep going.";
+      log("warn", "address.lookup.miss", "No match");
+      return;
+    }
+    state.geo = g;
+    const where = g.place ? `${g.place}${g.in_city_limits ? "" : " area"}` : `${g.county || "Unknown"} County`;
+    place.hidden = false;
+    if (g.town) {
+      state.town = state.towns.find((t) => t.id === g.town.id) || null;
+      $("est-town").value = state.town ? String(state.town.id) : "";
+      place.className = "est-place is-ok";
+      place.innerHTML = `<b>${esc(where)}</b><span>${esc(g.county)} County · ${g.in_city_limits ? "inside city limits" : "outside city limits"} · about ${g.distance_miles} mi from Eloy</span>`;
+    } else {
+      state.town = null; $("est-town").value = "other";
+      place.className = "est-place is-warn";
+      place.innerHTML = `<b>${esc(where)}${g.state ? ", " + esc(g.state) : ""}</b><span>That's outside our usual area, about ${g.distance_miles} mi out. Send a request anyway and we'll let you know.</span>`;
+    }
+    log("ok", "address.lookup.done", where, { town: g.town ? g.town.slug : null, miles: g.distance_miles, source: g.source });
+  }
+
+  function busy(on, text) {
+    const btn = $("est-lookup");
+    btn.disabled = on; btn.textContent = on ? "Finding…" : "Find";
+    if (on) { place.hidden = false; place.className = "est-place is-loading"; place.textContent = text; }
+  }
+
+  // Typed address (Find button, or Enter with nothing highlighted)
   async function lookup() {
     const a = addr.value.trim();
+    closeList();
     if (a.length < 6) { addr.focus(); return; }
-    const btn = $("est-lookup");
-    btn.disabled = true; btn.textContent = "Finding…";
-    place.hidden = false; place.className = "est-place is-loading"; place.textContent = "Looking up your address…";
-    log("info", "address.lookup.start", "Lookup requested");
-    try {
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/geocode`, {
-        method: "POST", headers: { "Content-Type": "application/json", apikey: SUPABASE_KEY },
-        body: JSON.stringify({ address: a, session }),
-      });
-      const g = await res.json();
-      if (!g.found) {
-        place.className = "est-place is-warn"; place.textContent = g.message || "We couldn't find that address. Pick your town below.";
-        state.geo = null;
-        log("warn", "address.lookup.miss", "No match");
-      } else {
-        state.geo = g;
-        const where = g.place ? `${g.place}${g.in_city_limits ? "" : " area"}` : `${g.county || "Unknown"} County`;
-        if (g.town) {
-          state.town = state.towns.find((t) => t.id === g.town.id) || null;
-          $("est-town").value = state.town ? String(state.town.id) : "";
-          place.className = "est-place is-ok";
-          place.innerHTML = `<b>${where}</b><span>${g.county} County · ${g.in_city_limits ? "inside city limits" : "outside city limits"} · about ${g.distance_miles} mi from Eloy</span>`;
-        } else {
-          state.town = null; $("est-town").value = "other";
-          place.className = "est-place is-warn";
-          place.innerHTML = `<b>${where}, ${g.state || ""}</b><span>That's outside our usual area, about ${g.distance_miles} mi out. Send a request anyway and we'll let you know.</span>`;
-        }
-        log("ok", "address.lookup.done", where, { town: g.town ? g.town.slug : null, miles: g.distance_miles });
-      }
-    } catch (e) {
-      place.className = "est-place is-warn"; place.textContent = "Lookup is having trouble. Pick your town below.";
-      log("error", "address.lookup.fail", String(e));
-    } finally {
-      btn.disabled = false; btn.textContent = "Find"; calc();
-    }
+    busy(true, "Looking up your address…");
+    log("info", "address.lookup.start", "Typed lookup");
+    try { showPlace(await geo({ address: a })); }
+    catch (e) { showPlace({ found: false, message: "Lookup is having trouble. Pick your town below." }); log("error", "address.lookup.fail", String(e)); }
+    finally { busy(false); calc(); }
   }
+
+  // Picked from the list
+  async function pick(i) {
+    const s = sugItems[i];
+    if (!s) return;
+    addr.value = s.label;
+    closeList();
+    busy(true, "Finding your area…");
+    log("info", "address.suggest.pick", "Suggestion picked", { position: i + 1 });
+    try { showPlace(await geo({ action: "resolve", key: s.key, label: s.label })); }
+    catch (e) { showPlace({ found: false, message: "Lookup is having trouble. Pick your town below." }); log("error", "address.lookup.fail", String(e)); }
+    finally { busy(false); calc(); }
+  }
+
+  function renderList() {
+    if (!sugItems.length) { closeList(); return; }
+    list.innerHTML = sugItems.map((s, i) => {
+      const [first, ...rest] = s.label.split(", ");
+      return `<li role="option" id="sug-${i}" class="${i === sugIndex ? "is-active" : ""}" data-i="${i}" aria-selected="${i === sugIndex}"><b>${esc(first)}</b><span>${esc(rest.join(", "))}</span></li>`;
+    }).join("");
+    list.hidden = false;
+    addr.setAttribute("aria-expanded", "true");
+    if (sugIndex >= 0) addr.setAttribute("aria-activedescendant", `sug-${sugIndex}`); else addr.removeAttribute("aria-activedescendant");
+  }
+  function closeList() { list.hidden = true; sugIndex = -1; addr.setAttribute("aria-expanded", "false"); addr.removeAttribute("aria-activedescendant"); }
+
+  addr.addEventListener("input", () => {
+    clearTimeout(sugTimer);
+    if (state.geo) { state.geo = null; place.hidden = true; }
+    const q = addr.value.trim();
+    if (q.length < 4) { sugItems = []; closeList(); return; }
+    sugTimer = setTimeout(async () => {
+      const seq = ++sugSeq;
+      try {
+        const r = await geo({ action: "suggest", q });
+        if (seq !== sugSeq) return; // a newer keystroke won
+        sugItems = r.suggestions || []; sugIndex = -1; renderList();
+      } catch (e) { log("warn", "address.suggest.fail", String(e)); }
+    }, 280);
+  });
+
+  addr.addEventListener("keydown", (e) => {
+    const open = !list.hidden && sugItems.length;
+    if (e.key === "ArrowDown" && open) { e.preventDefault(); sugIndex = (sugIndex + 1) % sugItems.length; renderList(); }
+    else if (e.key === "ArrowUp" && open) { e.preventDefault(); sugIndex = (sugIndex - 1 + sugItems.length) % sugItems.length; renderList(); }
+    else if (e.key === "Escape") { closeList(); }
+    else if (e.key === "Enter") { e.preventDefault(); if (open && sugIndex >= 0) pick(sugIndex); else lookup(); }
+  });
+  list.addEventListener("mousedown", (e) => e.preventDefault()); // keep focus so the tap registers
+  list.addEventListener("click", (e) => { const li = e.target.closest("li[data-i]"); if (li) pick(Number(li.dataset.i)); });
+  addr.addEventListener("blur", () => setTimeout(closeList, 150));
+  addr.addEventListener("focus", () => { if (window.innerWidth < 960) setTimeout(() => addr.scrollIntoView({ block: "start", behavior: "smooth" }), 250); });
   $("est-lookup").addEventListener("click", lookup);
-  addr.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); lookup(); } });
 
   // ---------- Math (mirrors calc_ballpark in the database) ----------
   let calcTimer;

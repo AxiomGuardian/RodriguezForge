@@ -58,13 +58,29 @@
 
 /* ---------- Address ---------- */
 .est-address { display: flex; gap: .5rem; }
-.est-address input { flex: 1; min-width: 0; }
+.est-address__field { position: relative; flex: 1; min-width: 0; }
+.est-address__field input { width: 100%; scroll-margin-top: calc(var(--nav-h) + 16px); }
+.est-suggest {
+  position: absolute; z-index: 40; left: 0; right: 0; top: calc(100% + 4px);
+  background: var(--black-2); border: 1px solid var(--steel-3); border-top: 2px solid var(--blue);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,.85); max-height: 320px; overflow-y: auto;
+}
+.est-suggest[hidden] { display: none; }
+.est-suggest li {
+  display: grid; gap: .1rem; padding: .75rem 1rem; cursor: pointer;
+  border-bottom: 1px solid var(--steel); transition: background .12s;
+}
+.est-suggest li:last-child { border-bottom: 0; }
+.est-suggest li b { color: var(--white); font-weight: 600; font-size: .95rem; }
+.est-suggest li span { color: var(--muted); font-size: .82rem; }
+.est-suggest li:hover, .est-suggest li.is-active { background: var(--blue-dim); box-shadow: inset 2px 0 0 var(--blue); }
 .est-address__go { flex: none; padding-inline: 1.25rem; }
 .est-place {
   margin-top: .85rem; padding: .85rem 1rem; border-left: 2px solid var(--blue);
   background: var(--blue-dim); font-size: .92rem; color: var(--warm-muted);
   display: grid; gap: .15rem;
 }
+.est-place[hidden] { display: none; }
 .est-place b { color: var(--white); font-weight: 600; }
 .est-place.is-ok { border-color: #4caf7a; background: rgba(76,175,122,.1); }
 .est-place.is-warn { border-color: var(--orange); background: var(--orange-dim); }

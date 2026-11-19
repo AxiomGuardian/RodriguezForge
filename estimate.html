@@ -75,7 +75,10 @@
               <div class="field">
                 <label for="est-address">Street address</label>
                 <div class="est-address">
-                  <input id="est-address" type="text" autocomplete="street-address" placeholder="123 Main St, Eloy, AZ" />
+                  <div class="est-address__field">
+                    <input id="est-address" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Start typing your address" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="est-suggest" />
+                    <ul class="est-suggest" id="est-suggest" role="listbox" hidden></ul>
+                  </div>
                   <button class="btn btn--secondary est-address__go" type="button" id="est-lookup">Find</button>
                 </div>
               </div>
