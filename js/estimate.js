@@ -24,7 +24,7 @@
     const t0 = performance.now();
     const [towns, jobs, fin, rates] = await Promise.all([
       sb.from("towns").select("id,slug,name,travel_adjust_pct,sort_order").order("sort_order"),
-      sb.from("job_types").select("slug,name,description").order("sort_order"),
+      sb.from("job_types").select("slug,name,description,default_size,max_size,size_hint").order("sort_order"),
       sb.from("finish_levels").select("slug,name,description").order("sort_order"),
       sb.from("ballpark_rates").select("job_type,finish_level,low_per_unit,high_per_unit,minimum_job,is_placeholder"),
     ]);
@@ -71,7 +71,7 @@
   function renderJobs() {
     const c = $("est-jobs");
     c.innerHTML = state.jobs.map((j) => tile("job", j.slug, j.name, j.description, JOB_ICONS[j.slug])).join("");
-    bindTiles(c, "job", (v) => { state.job = v; log("info", "job.select", v); calc(); });
+    bindTiles(c, "job", (v) => { state.job = v; applyJobSize(); log("info", "job.select", v); calc(); });
   }
 
   function renderFinishes() {
@@ -82,16 +82,27 @@
 
   // ---------- Size ----------
   const size = $("est-size"), slider = $("est-slider");
+  let sizeTouched = false, sliderMax = 5000;
   function setSize(v, from) {
     v = Math.max(50, Math.min(10000, Number(v) || 0));
     state.size = v;
     if (from !== "num") size.value = v;
-    if (from !== "slider") slider.value = Math.min(v, 5000);
-    slider.style.setProperty("--p", ((Math.min(v, 5000) - 50) / 4950) * 100 + "%");
+    if (from !== "slider") slider.value = Math.min(v, sliderMax);
+    slider.style.setProperty("--p", ((Math.min(v, sliderMax) - 50) / (sliderMax - 50)) * 100 + "%");
     calc();
   }
-  slider.addEventListener("input", () => setSize(slider.value, "slider"));
-  size.addEventListener("input", () => { if (size.value) setSize(size.value, "num"); });
+  function applyJobSize() {
+    const j = state.jobs.find((x) => x.slug === state.job);
+    if (!j) return;
+    sliderMax = j.max_size || 5000;
+    slider.max = sliderMax;
+    const steps = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round((50 + f * (sliderMax - 50)) / 50) * 50 || 50);
+    document.querySelector(".est-ticks").innerHTML = steps.map((n, i) => `<span>${n.toLocaleString()}${i === 4 ? "+" : ""}</span>`).join("");
+    if (j.size_hint) document.querySelector(".est-hint").textContent = j.size_hint;
+    setSize(sizeTouched ? state.size : (j.default_size || 1500));
+  }
+  slider.addEventListener("input", () => { sizeTouched = true; setSize(slider.value, "slider"); });
+  size.addEventListener("input", () => { if (size.value) { sizeTouched = true; setSize(size.value, "num"); } });
   size.addEventListener("blur", () => setSize(size.value));
   slider.addEventListener("change", () => log("info", "size.set", String(state.size)));
   setSize(1500);
