@@ -69,6 +69,10 @@
       <section class="est-wrap">
         <div class="container est-layout">
           <form class="est-steps" id="est-form" novalidate>
+            <div class="est-resume" id="est-resume" hidden>
+              <span>Welcome back. Your answers from last time are filled in.</span>
+              <button type="button" class="est-link" id="est-resume-reset">Start over</button>
+            </div>
             <!-- 1. Where -->
             <fieldset class="est-card" data-step="1">
               <legend class="est-card__head"><span class="est-num">01</span><span>Where is the project?</span></legend>
@@ -98,7 +102,8 @@
             <!-- 3. Size -->
             <fieldset class="est-card" data-step="3">
               <legend class="est-card__head"><span class="est-num">03</span><span>How big?</span></legend>
-              <div class="est-size">
+              <div class="est-tiles est-tiles--3" id="est-tiers" role="radiogroup" aria-label="Job size" hidden></div>
+              <div class="est-size" id="est-size-block">
                 <div class="est-size__read">
                   <input id="est-size" type="number" inputmode="numeric" min="50" max="10000" step="10" value="1500" aria-label="Square feet" />
                   <span>sq ft</span>
@@ -126,6 +131,7 @@
               <span class="est-sample" id="est-sample" hidden>Sample rates</span>
               <p class="est-fine">A rough range for labor and materials to help you plan, not a bid. It doesn't include land, permits, or utility hookups. Your real price comes after we see the property.</p>
               <button class="btn btn--primary btn--full" type="button" id="est-request-open" disabled>Request a real estimate</button>
+              <button type="button" class="est-link est-link--center" id="est-restart" hidden>Start over</button>
             </div>
           </aside>
         </div>
@@ -140,7 +146,7 @@
             <form id="req-form" novalidate>
               <div class="form-row form-row--2">
                 <div class="field"><label for="req-name">Full name</label><input id="req-name" type="text" autocomplete="name" required /></div>
-                <div class="field"><label for="req-phone">Phone</label><input id="req-phone" type="tel" autocomplete="tel" /></div>
+                <div class="field"><label for="req-phone">Phone</label><input id="req-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(520) 555-1234" /></div>
               </div>
               <div class="form-row form-row--2">
                 <div class="field"><label for="req-email">Email</label><input id="req-email" type="email" autocomplete="email" /></div>
@@ -188,6 +194,10 @@
                   <div class="est-thumbs" id="req-thumbs"></div>
                 </div>
               </div>
+              <div class="est-hp" aria-hidden="true">
+                <label for="req-website">Leave this empty</label>
+                <input id="req-website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
               <p class="est-error" id="req-error" role="alert" hidden></p>
               <button class="btn btn--primary btn--full" type="submit" id="req-submit">Send my request</button>
               <p class="form-note">By sending, you agree to be contacted about your project. Your info stays with Rodriguez Forge.</p>
@@ -196,6 +206,7 @@
               <span class="est-done__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
               <h3>Request received</h3>
               <p id="req-done-text">We'll reach out soon to set up a time to see the property.</p>
+              <button type="button" class="btn btn--secondary est-again" id="req-again">Start a new estimate</button>
             </div>
           </div>
         </div>
@@ -211,6 +222,34 @@
 
     <footer class="site-footer">
       <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <img src="assets/logo/logo-full.png" alt="Rodriguez Forge LLC" width="200" height="140" />
+            <p>Residential construction and remodeling. Eloy, Arizona and beyond.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Navigate</h4>
+            <a href="projects.html">Projects</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="process.html">Process</a>
+            <a href="estimate.html">Estimate</a>
+            <a href="contact.html">Contact</a>
+          </div>
+          <div class="footer-col">
+            <h4>Services</h4>
+            <a href="services.html">New Construction</a>
+            <a href="services.html">Remodeling</a>
+            <a href="services.html">Additions</a>
+            <a href="services.html">Repairs & Upgrades</a>
+          </div>
+          <div class="footer-col">
+            <h4>Contact</h4>
+            <p>Eloy, Arizona</p>
+            <p><a data-rf="phone-link" href="contact.html"><span data-rf="phone">Request a call</span></a></p>
+            <p><a data-rf="email-link" href="mailto:hello@rodriguezforge.com"><span data-rf="email">hello@rodriguezforge.com</span></a></p>
+          </div>
+        </div>
         <div class="footer-bottom">
           <p>© <span data-year></span> Rodriguez Forge LLC. All rights reserved.</p>
           <p class="footer-tagline">We don’t just build it. We forge it.</p>
